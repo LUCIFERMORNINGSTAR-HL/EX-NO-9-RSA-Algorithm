@@ -36,13 +36,57 @@ Step 5: **Security Foundation
 The security of RSA relies on the difficulty of factoring large numbers; thus, choosing sufficiently large prime numbers for \( p \) and \( q \) is crucial for security.
 
 ## Program:
+```python
+# rsa_demo.py
+# Simple RSA demo for learning. Works with small integers (not secure for real use).
 
+def egcd(a, b):
+    # extended gcd: returns (g, x, y) with a*x + b*y = g = gcd(a,b)
+    if b == 0:
+        return (a, 1, 0)
+    g, x1, y1 = egcd(b, a % b)
+    return (g, y1, x1 - (a // b) * y1)
 
+def modinv(a, m):
+    g, x, _ = egcd(a, m)
+    if g != 1:
+        raise Exception("modular inverse does not exist")
+    return x % m
 
+def generate_keys():
+    # small example primes (educational only)
+    p = 61
+    q = 53
+    n = p * q
+    phi = (p - 1) * (q - 1)
 
+    e = 17                     # choose e (1 < e < phi) and gcd(e, phi) == 1
+    d = modinv(e, phi)         # compute d, the modular inverse of e mod phi
+    return (n, e, d)
+
+def encrypt(m, e, n):
+    return pow(m, e, n)
+
+def decrypt(c, d, n):
+    return pow(c, d, n)
+
+if __name__ == "__main__":
+    n, e, d = generate_keys()
+    print("Public key: (n={}, e={})".format(n, e))
+    print("Private key: d={}".format(d))
+
+    # Example: message must be 0 <= m < n
+    m = 65
+    print("Plaintext m:", m)
+
+    c = encrypt(m, e, n)
+    print("Encrypted c:", c)
+
+    m2 = decrypt(c, d, n)
+    print("Decrypted m:", m2)
+```
 ## Output:
-
-
+<img width="359" height="207" alt="Screenshot 2025-11-19 111821" src="https://github.com/user-attachments/assets/704f727f-4f5f-4eaf-9905-c3b3bd50404e" />
 
 ## Result:
  The program is executed successfully.
